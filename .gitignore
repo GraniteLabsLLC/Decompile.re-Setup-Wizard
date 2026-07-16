@@ -1,0 +1,20 @@
+bin/
+obj/
+.vs/
+.idea/
+.vscode/
+artifacts/
+TestResults/
+*.user
+*.suo
+*.nupkg
+*.snupkg
+.DS_Store
+.dotnet/
+__pycache__/
+*.py[cod]
+
+# Local signing material must never be committed.
+*.private.pem
+*.pfx
+*.p12
