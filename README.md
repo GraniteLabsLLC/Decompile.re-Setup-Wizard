@@ -6,7 +6,8 @@ Cross-platform installer for the Decompile.re IDA Pro client. The desktop UI is 
 
 - Detects IDA Pro on Windows, macOS, and Linux, with manual folder selection for custom installations.
 - Detects a compatible Python 3 runtime and whether IDAPython is present.
-- Reads the latest public release from `AI-Reversal/IDA-Pro-Client`.
+- Reads the latest public release from
+  `GraniteLabsLLC/Decompile.re-IDA-Pro-Client`.
 - Requires an ECDSA P-256 signed release manifest.
 - Verifies manifest SHA-256 metadata against GitHub release metadata and downloaded bytes.
 - Installs platform/Python-specific dependencies from an offline, hash-locked wheel bundle.

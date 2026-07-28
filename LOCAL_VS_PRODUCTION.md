@@ -14,4 +14,7 @@
 
 ## Release source
 
-Both local and production builds read public releases from `AI-Reversal/IDA-Pro-Client`. Do not add a local unsigned-release bypass; use a separately signed development release if end-to-end testing is required.
+Both local and production builds read public releases from
+`GraniteLabsLLC/Decompile.re-IDA-Pro-Client`. Do not add a local
+unsigned-release bypass; use a separately signed development release if
+end-to-end testing is required.

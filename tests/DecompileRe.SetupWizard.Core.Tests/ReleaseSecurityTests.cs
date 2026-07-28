@@ -9,6 +9,17 @@ namespace DecompileRe.SetupWizard.Core.Tests;
 public sealed class ReleaseSecurityTests
 {
     [Fact]
+    public void InstallerDefaultsToPublicDistributionRepository()
+    {
+        var options = new InstallerOptions { SigningPublicKeyPem = "test" };
+
+        Assert.Equal(
+            "https://api.github.com/repos/GraniteLabsLLC/" +
+            "Decompile.re-IDA-Pro-Client/releases/latest",
+            options.LatestReleaseUri.AbsoluteUri);
+    }
+
+    [Fact]
     public void VerifyManifestSignatureAcceptsMatchingKey()
     {
         var manifest = Encoding.UTF8.GetBytes("{\"schema_version\":1}");

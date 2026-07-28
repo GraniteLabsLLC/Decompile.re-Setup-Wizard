@@ -2,8 +2,8 @@ namespace DecompileRe.SetupWizard.Core.Services;
 
 public sealed class InstallerOptions
 {
-    public const string DefaultOwner = "AI-Reversal";
-    public const string DefaultRepository = "IDA-Pro-Client";
+    public const string DefaultOwner = "GraniteLabsLLC";
+    public const string DefaultRepository = "Decompile.re-IDA-Pro-Client";
 
     public string GitHubOwner { get; init; } = DefaultOwner;
 
