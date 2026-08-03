@@ -1,85 +1,44 @@
 # Decompile.re Setup Wizard
 
-Cross-platform installer for the Decompile.re IDA Pro client. The desktop UI is built with Avalonia and the installation engine is isolated in a testable .NET library.
+Official cross-platform installer for the Decompile.re clients for IDA Pro,
+Binary Ninja, and Ghidra.
 
-## Current baseline
+## Download
 
-- Detects IDA Pro on Windows, macOS, and Linux, with manual folder selection for custom installations.
-- Detects a compatible Python 3 runtime and whether IDAPython is present.
-- Reads the latest public release from
-  `GraniteLabsLLC/Decompile.re-IDA-Pro-Client`.
-- Requires an ECDSA P-256 signed release manifest.
-- Verifies manifest SHA-256 metadata against GitHub release metadata and downloaded bytes.
-- Installs platform/Python-specific dependencies from an offline, hash-locked wheel bundle.
-- Installs into the user's IDA plugin directory without administrator access.
-- Stages updates, backs up an existing installation, and rolls back failed activation.
-- Rejects untrusted redirects, oversized downloads, ZIP traversal, and ZIP symlinks.
+Download the latest installer for your operating system and architecture from
+[GitHub Releases](https://github.com/GraniteLabsLLC/Decompile.re-Setup-Wizard/releases/latest).
 
-IDAPython is version-coupled to IDA. The wizard detects it but does not download an arbitrary IDAPython build. A missing IDAPython installation must be repaired through the matching Hex-Rays installer until a version-authenticated Hex-Rays package source is integrated.
+| Platform | Asset |
+| --- | --- |
+| Windows x64 | `Decompile.re-Setup-Wizard-win-x64.zip` |
+| Windows ARM64 | `Decompile.re-Setup-Wizard-win-arm64.zip` |
+| macOS Intel | `Decompile.re-Setup-Wizard-osx-x64.tar.gz` |
+| macOS Apple Silicon | `Decompile.re-Setup-Wizard-osx-arm64.tar.gz` |
+| Linux x64 | `Decompile.re-Setup-Wizard-linux-x64.tar.gz` |
+| Linux ARM64 | `Decompile.re-Setup-Wizard-linux-arm64.tar.gz` |
 
-## Build
+Verify the downloaded file against `SHA256SUMS.txt` from the same release before running it.
 
-Install the [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0), then run:
+## Installation
 
-```powershell
-dotnet restore --locked-mode
-dotnet build -c Release --no-restore
-dotnet test -c Release --no-build --no-restore
-```
+1. Extract the downloaded archive.
+2. Run `Decompile.re-Setup-Wizard`.
+3. Select the detected IDA Pro, Binary Ninja, or Ghidra installation.
+4. Review the installation and continue.
+5. Restart the selected application after installation completes.
 
-Run the wizard during development:
+The wizard installs the appropriate Decompile.re client into the current user's
+plugin directory and does not require administrator access.
 
-```powershell
-dotnet run --project src/DecompileRe.SetupWizard
-```
+## Requirements
 
-Create a self-contained Windows build:
+- IDA Pro 8.x or 9.x, Binary Ninja, or Ghidra.
+- The scripting runtime required by the selected application. IDA Pro requires
+  IDAPython installed for the selected IDA version.
+- An internet connection for retrieving the signed Decompile.re client release.
 
-```powershell
-dotnet publish src/DecompileRe.SetupWizard `
-  -c Release -r win-x64 --self-contained true `
-  -p:PublishSingleFile=true `
-  -p:IncludeNativeLibrariesForSelfExtract=true `
-  -o artifacts/win-x64
-```
+IDAPython is tied to the installed IDA version. If it is missing, repair the IDA installation using the matching Hex-Rays installer before running the wizard again.
 
-Use `osx-x64`, `osx-arm64`, `linux-x64`, or `linux-arm64` for the other targets. Production Windows and macOS artifacts must be code-signed; macOS artifacts must also be notarized.
+## Security
 
-Pushing a `v*` tag builds all configured targets into a **draft** GitHub Release. The workflow intentionally does not publish unsigned binaries. Add the platform signing/notarization credentials and steps before promoting a draft to a public release.
-
-## Release input
-
-The client repository's latest GitHub Release must contain:
-
-- `release-manifest.json`
-- `release-manifest.sig`
-- The plugin ZIP named by the manifest
-- A dependency bundle for each supported runtime/Python ABI named by the manifest
-
-Dependency bundles contain `requirements.lock` and a `wheels/` directory. Pip is executed with `--no-index`, `--require-hashes`, and `--only-binary=:all:` so installation cannot resolve mutable packages from the network.
-
-See [docs/RELEASE_FORMAT.md](docs/RELEASE_FORMAT.md) for the schema and signing process.
-
-## Signing key
-
-The repository embeds only `src/DecompileRe.SetupWizard/Assets/release-signing-public-key.pem`. A matching private key was generated locally as `release-signing.private.pem`; `.gitignore` excludes it.
-
-Before creating a release:
-
-1. Move the private key into an organization-controlled secret manager.
-2. Add it to the client release workflow as a protected environment secret.
-3. Securely remove the local plaintext copy.
-4. Keep an offline recovery copy and document key rotation.
-
-Never commit or upload the private key as a release artifact.
-
-## Repository layout
-
-```text
-src/DecompileRe.SetupWizard.Core/   Release verification and installation engine
-src/DecompileRe.SetupWizard/        Avalonia desktop wizard
-tests/                              Security and installer tests
-scripts/                            Release-manifest tooling
-docs/                               Release contract and operations notes
-.github/workflows/                  Locked build and publish automation
-```
+The wizard accepts only plugin releases covered by the embedded Decompile.re release-signing key. It verifies signed manifests, asset sizes, and SHA-256 hashes before installing files. Dependencies are installed from platform-specific, hash-locked offline bundles without a package-index fallback.
